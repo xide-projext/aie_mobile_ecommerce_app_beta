@@ -9,27 +9,31 @@ final toons = [
 // Router
 void main() async {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     initialRoute: '/',
     routes: {
-      // When navigating to the "/" route, build the FirstScreen widget.
-      '/': (context) => const FirstScreen(),
-      // When navigating to the "/second" route, build the SecondScreen widget.
-      '/second': (context) => const SecondScreen(),
+      // When navigating to the "/" route, build the HomePage widget.
+      '/': (context) => const HomePage(),
+      // When navigating to the "/second" route, build the ProductPage widget.
+      '/second': (context) => const ProductPage(),
+      '/pay': (context)  => const PaymentPage(),
     },
   ));
 }
 
-class FirstScreen extends StatelessWidget {
-  const FirstScreen({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("내폰내툰")),
+        appBar: AppBar(
+          title: const Text("Yonsei Shop 2"),
+          leading : IconButton(icon: Icon(Icons.menu), onPressed: (){Navigator.pushNamed(context, '/pay');},)),
         body: Center(
             child: Container(
                 margin: const EdgeInsets.all(10.0),
-                color: Colors.amber[600],
+                color: Colors.blueAccent,
                 child: Column(children: [
                   const Placeholder(fallbackHeight: 40),
                   Row(
@@ -96,14 +100,26 @@ class FirstScreen extends StatelessWidget {
 
 
 
-class SecondScreen extends StatelessWidget {
-  const SecondScreen({super.key});
+class ProductPage extends StatelessWidget {
+  const ProductPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("내폰내툰2")),
+        appBar: AppBar(title: const Text("ProductPage")),
         body: const Text("2")
+    );
+  }
+}
+
+class PaymentPage extends StatelessWidget {
+  const PaymentPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: const Text("Payment")),
+        body: const Text("3")
     );
   }
 }
