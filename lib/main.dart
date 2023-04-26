@@ -1,12 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-final toons = [
-  {"title": "연세 볼펜", "image" :  "https://yonseicoop.com/data/goods/8/833/20190412_183816.jpg"},
-  {"title": "연세 필통", "image": "https://www.yonsei.ac.kr/_res/sc/img/intro/img_symbol8.png"}
-];
-
-
 // Router
 void main() async {
   runApp(MaterialApp(
@@ -15,8 +9,7 @@ void main() async {
     routes: {
       // When navigating to the "/" route, build the MainPage widget.
       '/': (context) => const MainPage(),
-      // When navigating to the "/second" route, build the ProductPage widget.
-      '/second': (context) => const ProductPage(),
+      '/card': (context) => const ProductPage(),
       '/pay': (context)  => const PaymentPage(),
     },
   ));
@@ -72,7 +65,7 @@ class MainPage extends StatelessWidget {
                                 onPressed: () {
                                   // Validate will return true if the form is valid, or false if
                                   // the form is invalid.
-                                  Navigator.pushNamed(context, '/second');
+                                  Navigator.pushNamed(context, '/cart');
                                 },
                                 child: const Text('검색하기'),
                               ),
@@ -91,10 +84,10 @@ class MainPage extends StatelessWidget {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                TextButton(onPressed: (){}, child: Text("교재도서", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),),),
-                                TextButton(onPressed: (){}, child: Text("패션굿즈", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),),),
-                                TextButton(onPressed: (){}, child: Text("문구굿즈", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),),),
-                                TextButton(onPressed: (){}, child: Text("생활용품", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),),),
+                                TextButton(onPressed: (){Navigator.pushNamed(context, '/pay');}, child: Text("교재도서", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),),),
+                                TextButton(onPressed: (){Navigator.pushNamed(context, '/pay');}, child: Text("패션굿즈", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),),),
+                                TextButton(onPressed: (){Navigator.pushNamed(context, '/pay');}, child: Text("문구굿즈", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),),),
+                                TextButton(onPressed: (){Navigator.pushNamed(context, '/pay');}, child: Text("생활용품", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),),),
                               ],
                             ),
                           )
@@ -117,6 +110,21 @@ class MainPage extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Container(
+                                      child: Column(
+                                        children: [
+                                          Image.asset("assets/images/pen.jpeg", width: 200, height: 200,),
+                                          Text("연세대학교 펜"),
+                                          Text("5,000원"),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, '/pay');
+                                            },
+                                            child: const Text('구매하기!'),
+                                          ),
+                                        ],
+                                      )
+                                  ),
+                                  Container(
                                     child: Column(
                                       children: [
                                         Image.asset("assets/images/pencilc_ase.png", width: 200, height: 200,),
@@ -124,9 +132,7 @@ class MainPage extends StatelessWidget {
                                         Text("10,000원"),
                                         ElevatedButton(
                                           onPressed: () {
-                                            // Validate will return true if the form is valid, or false if
-                                            // the form is invalid.
-                                            Navigator.pushNamed(context, '/second');
+                                            Navigator.pushNamed(context, '/pay');
                                           },
                                           child: const Text('구매하기!'),
                                         ),
@@ -141,26 +147,7 @@ class MainPage extends StatelessWidget {
                                           Text("35,000원"),
                                           ElevatedButton(
                                             onPressed: () {
-                                              // Validate will return true if the form is valid, or false if
-                                              // the form is invalid.
-                                              Navigator.pushNamed(context, '/second');
-                                            },
-                                            child: const Text('구매하기!'),
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                  Container(
-                                      child: Column(
-                                        children: [
-                                          Image.asset("assets/images/pen.jpeg", width: 200, height: 200,),
-                                          Text("연세대학교 펜"),
-                                          Text("5,000원"),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              // Validate will return true if the form is valid, or false if
-                                              // the form is invalid.
-                                              Navigator.pushNamed(context, '/second');
+                                              Navigator.pushNamed(context, '/pay');
                                             },
                                             child: const Text('구매하기!'),
                                           ),
@@ -175,9 +162,7 @@ class MainPage extends StatelessWidget {
                                           Text("20,000원"),
                                           ElevatedButton(
                                             onPressed: () {
-                                              // Validate will return true if the form is valid, or false if
-                                              // the form is invalid.
-                                              Navigator.pushNamed(context, '/second');
+                                              Navigator.pushNamed(context, '/pay');
                                             },
                                             child: const Text('구매하기!'),
                                           ),
@@ -217,9 +202,7 @@ class MainPage extends StatelessWidget {
                                               SizedBox(height: 3,),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  // Validate will return true if the form is valid, or false if
-                                                  // the form is invalid.
-                                                  Navigator.pushNamed(context, '/second');
+                                                  Navigator.pushNamed(context, '/pay');
                                                 },
                                                 child: const Text('구매하기!'),
                                               ),
@@ -241,9 +224,7 @@ class MainPage extends StatelessWidget {
                                               SizedBox(height: 3,),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  // Validate will return true if the form is valid, or false if
-                                                  // the form is invalid.
-                                                  Navigator.pushNamed(context, '/second');
+                                                  Navigator.pushNamed(context, '/pay');
                                                 },
                                                 child: const Text('구매하기!'),
                                               ),
@@ -265,9 +246,7 @@ class MainPage extends StatelessWidget {
                                               SizedBox(height: 3,),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  // Validate will return true if the form is valid, or false if
-                                                  // the form is invalid.
-                                                  Navigator.pushNamed(context, '/second');
+                                                  Navigator.pushNamed(context, '/pay');
                                                 },
                                                 child: const Text('구매하기!'),
                                               ),
@@ -289,9 +268,7 @@ class MainPage extends StatelessWidget {
                                               SizedBox(height: 3,),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  // Validate will return true if the form is valid, or false if
-                                                  // the form is invalid.
-                                                  Navigator.pushNamed(context, '/second');
+                                                  Navigator.pushNamed(context, '/cart');
                                                 },
                                                 child: const Text('구매하기!'),
                                               ),
@@ -337,7 +314,6 @@ class MainPage extends StatelessWidget {
 }
 
 
-
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
 
@@ -356,8 +332,64 @@ class PaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Payment")),
-        body: const Text("3")
+        appBar: AppBar(title: const Text("상품 카트")),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                  padding: EdgeInsets.all(5.0),
+                  margin: const EdgeInsets.all(5.0),
+                  child: Column(children: [
+                    Container(
+
+                        child :Text('상품 구매하기',
+                            style: TextStyle(fontSize: 22),
+                            textAlign: TextAlign.left)
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration : BoxDecoration(
+                            borderRadius:  BorderRadius.circular(2),
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,)
+                        ),
+                        child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: Column(
+                              children: [
+                                Image.asset("assets/images/pen.jpeg", width: 500, height: 500,),
+                                Text("연세대학교 펜",
+                                  style: TextStyle(
+                                  fontSize: 24.0, // 폰트 크기 설정
+                                  fontWeight: FontWeight.bold, // 폰트 두께 설정
+                                  color: Colors.black, // 폰트 색상 설정
+                                ),),
+                                SizedBox(height: 20,),
+                                Text("10,000원",
+                                    style: TextStyle(
+                                    fontSize: 20.0, // 폰트 크기 설정
+                                    fontWeight: FontWeight.bold, // 폰트 두께 설정
+                                    color: Colors.black, // 폰트 색상 설정
+                                ),
+                                ),
+                                SizedBox(height: 20,),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/cart');
+                                  },
+                                  child: const Text('결제하기!'),
+                                ),
+                                SizedBox(height: 20,)
+                              ],
+                            )
+                        ),
+                    ),
+                  ])),
+            ],
+          ),
+        )
     );
   }
 }
