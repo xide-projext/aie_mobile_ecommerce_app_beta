@@ -10,7 +10,7 @@ void main() async {
     routes: {
       // When navigating to the "/" route, build the MainPage widget.
       '/': (context) => const MainPage(),
-      '/cart': (context) => const CardPage(),
+      '/cart': (context) => const CartPage(),
       '/pay': (context)  => const PaymentPage(),
     },
   ));
@@ -315,8 +315,8 @@ class MainPage extends StatelessWidget {
 }
 
 
-class CardPage extends StatelessWidget {
-  const CardPage({super.key});
+class CartPage extends StatelessWidget {
+  const CartPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -419,13 +419,14 @@ class CardPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              Image.asset("assets/images/pen.jpeg", width: 500, height: 500,),
+                              Image.asset("assets/images/pen.jpeg", width: 1000, height: 1000,),
                               Text("연세대학교 펜",
-                                style: TextStyle(
-                                  fontSize: 24.0, // 폰트 크기 설정
-                                  fontWeight: FontWeight.bold, // 폰트 두께 설정
-                                  color: Colors.black, // 폰트 색상 설정
-                                ),),
+                                // style: TextStyle(
+                                //   fontSize: 24.0, // 폰트 크기 설정
+                                //   fontWeight: FontWeight.bold, // 폰트 두께 설정
+                                //   color: Colors.black, // 폰트 색상 설정
+                                // ),
+                              ),
                               SizedBox(height: 20,),
                               Text("10,000원",
                                 style: TextStyle(
@@ -465,45 +466,44 @@ class PaymentPage extends StatelessWidget {
                     Container(
 
                         child :Text('상품 구매하기',
-                            style: TextStyle(fontSize: 22),
-                            textAlign: TextAlign.left)
+                            )
                     ),
                     SizedBox(height: 10,),
                     Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration : BoxDecoration(
-                            borderRadius:  BorderRadius.circular(2),
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2,)
-                        ),
+                        // width: MediaQuery.of(context).size.width,
+                        // decoration : BoxDecoration(
+                        //     borderRadius:  BorderRadius.circular(2),
+                        //     border: Border.all(
+                        //       color: Colors.black,
+                        //       width: 2,)
+                        // ),
                         child: Container(
                             width: MediaQuery.of(context).size.width,
                             child: Column(
                               children: [
-                                Image.asset("assets/images/pen.jpeg", width: 500, height: 500,),
+                                Image.asset("assets/imawges/pen.jpeg", width: 100, height: 100,),
                                 Text("연세대학교 펜",
                                   style: TextStyle(
-                                  fontSize: 24.0, // 폰트 크기 설정
+                                  fontSize: 12.0, // 폰트 크기 설정
                                   fontWeight: FontWeight.bold, // 폰트 두께 설정
                                   color: Colors.black, // 폰트 색상 설정
                                 ),),
-                                SizedBox(height: 20,),
+                                // SizedBox(height: 20,),
                                 Text("10,000원",
-                                    style: TextStyle(
-                                    fontSize: 20.0, // 폰트 크기 설정
-                                    fontWeight: FontWeight.bold, // 폰트 두께 설정
-                                    color: Colors.black, // 폰트 색상 설정
+                                //     style: TextStyle(
+                                //     fontSize: 20.0, // 폰트 크기 설정
+                                //     fontWeight: FontWeight.bold, // 폰트 두께 설정
+                                //     color: Colors.black, // 폰트 색상 설정
+                                // ),
                                 ),
-                                ),
-                                SizedBox(height: 20,),
+                                // SizedBox(height: 20,),
                                 ElevatedButton(
                                   onPressed: () {
                                     Navigator.pushNamed(context, '/cart');
                                   },
-                                  child: const Text('결제하기!'),
+                                  child: const Text('결제'),
                                 ),
-                                SizedBox(height: 20,)
+                                // SizedBox(height: 20,)
                               ],
                             )
                         ),
