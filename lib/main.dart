@@ -359,7 +359,7 @@ class CardPage extends StatelessWidget {
                                     // ),
                                     child: TextFormField(
                                       decoration: const InputDecoration(
-                                        hintText: '카드 번호를 입력해주세요',
+                                        hintText: 'INSERT',
                                       ),
                                       validator: (String? value) {
                                         if (value == null || value.isEmpty) {
@@ -369,44 +369,8 @@ class CardPage extends StatelessWidget {
                                       },
                                     ),
                                   ),
-                                  Container(
-                                    // decoration: BoxDecoration(
-                                    //     border: Border.all(
-                                    //       color: Colors.black,
-                                    //       width: 2,
-                                    //     )
-                                    // ),
-                                    child: TextFormField(
-                                      decoration: const InputDecoration(
-                                        hintText: 'MM/YY',
-                                      ),
-                                      validator: (String? value) {
-                                        if (value == null || value.isEmpty) {
-                                          return '카드 번호를 다시 입력해주세요';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
-                                  Container(
-                                    // decoration: BoxDecoration(
-                                    //     border: Border.all(
-                                    //       color: Colors.black,
-                                    //       width: 2,
-                                    //     )
-                                    // ),
-                                    child: TextFormField(
-                                      decoration: const InputDecoration(
-                                        hintText: 'CVC',
-                                      ),
-                                      validator: (String? value) {
-                                        if (value == null || value.isEmpty) {
-                                          return '카드 번호를 다시 입력해주세요';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
+
+
                                   Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                                     child: ElevatedButton(
@@ -419,22 +383,11 @@ class CardPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              Image.asset("assets/images/pen.jpeg", width: 500, height: 500,),
+                              Image.asset("", width: 500, height: 500,),
                               Text("연세대학교 펜",
-                                style: TextStyle(
-                                  fontSize: 24.0, // 폰트 크기 설정
-                                  fontWeight: FontWeight.bold, // 폰트 두께 설정
-                                  color: Colors.black, // 폰트 색상 설정
-                                ),),
-                              SizedBox(height: 20,),
-                              Text("10,000원",
-                                style: TextStyle(
-                                  fontSize: 20.0, // 폰트 크기 설정
-                                  fontWeight: FontWeight.bold, // 폰트 두께 설정
-                                  color: Colors.black, // 폰트 색상 설정
-                                ),
                               ),
-                              SizedBox(height: 20,)
+                              Text("10,000원",
+                              ),
                             ],
                           )
                       ),
