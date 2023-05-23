@@ -670,6 +670,7 @@ class ConsumerProfileForm extends StatefulWidget {
 }
 class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
   LoggedInData? _loggedData; //사용자 로그인 데이터 저장을 위한 변수
+
   final _formKey = GlobalKey<FormState>();
   final _consumerProfile = ConsumerProfile(name: '', email: '', address: '');
 
@@ -701,33 +702,35 @@ class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
         child: Column(
           children: <Widget>[
             TextFormField(
-              decoration: InputDecoration(labelText: 'Name'),
+              decoration: InputDecoration(labelText: '아이디 / name'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your name';
+                  return 'Please enter your ID';
                 }
                 return null;
               },
-              onSaved: (value) {
+              onSaved: (value) async {
                 setState(() {
                   _consumerProfile.name = value!;
                   _loggedData?.id = value;
                 });
+                await _loggedData?.saveInstance();
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: 'PassWord / email'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your email';
+                  return 'Please enter your password';
                 }
                 return null;
               },
-              onSaved: (value) {
+              onSaved: (value) async {
                 setState(() {
                   _consumerProfile.email = value!;
                   _loggedData?.pw = value;
                 });
+                await _loggedData?.saveInstance();
               },
             ),
             TextFormField(
@@ -755,7 +758,7 @@ class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
                   Navigator.pop(context);
                 }
               },
-              child: Text('친구 신청'),
+              child: Text('로그인 하기'),
             ),
           ],
         ),
@@ -861,7 +864,6 @@ class ProductData {
 }
 class CostData extends ProductData {
   int cost;
-
   CostData({required String product, required int counts, required this.cost})
       : super(product: product, counts: counts);
 
