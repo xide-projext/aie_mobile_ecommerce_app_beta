@@ -9,23 +9,15 @@ class MainPage extends StatefulWidget{
   @override
   State<MainPage> createState() => _MainPageState();
 }
-
 class _MainPageState extends State <MainPage> {
-  final userProfile = UserProfile(name: '', email: '');
-  final studentProfile = StudentProfile(name: '', email: '', grade: 0);
-  final engineerProfile = EngineerProfile(name: '', email: '', skill: '');
-  void updateStudentProfile(StudentProfile profile) {
+  final userProfile = UserProfile(name: '', address: '', email: '');
+  final consumerProfile = ConsumerProfile(name: '', email: '', address: '');
+
+  void updateConsumerProfile(ConsumerProfile profile) {
     setState(() {
-      studentProfile.name = profile.name;
-      studentProfile.email = profile.email;
-      studentProfile.grade = profile.grade;
-    });
-  }
-  void updateEngineerProfile(EngineerProfile profile) {
-    setState(() {
-      engineerProfile.name = profile.name;
-      engineerProfile.email = profile.email;
-      engineerProfile.skill = profile.skill;
+      consumerProfile.name = profile.name;
+      consumerProfile.email = profile.email;
+      consumerProfile.address = profile.address;
     });
   }
 
@@ -37,38 +29,34 @@ class _MainPageState extends State <MainPage> {
       routes: {
         // When navigating to the "/" route, build the MainPage widget.
         '/': (context) => HomePage(
-          studentProfile: studentProfile,
-          engineerProfile: engineerProfile,
+          consumerProfile: consumerProfile,
         ),
         '/cart': (context) => const CardPage(),
         '/pay': (context)  => const PaymentPage(),
-        '/engineerProfileForm': (context) => EngineerProfileForm(
+        '/engineerProfileForm': (context) => ConsumerProfileForm(
     userProfile: userProfile,
-    updateProfile: updateEngineerProfile),
+    updateProfile: updateConsumerProfile),
       },
     );
   }
 }
+
+
 class HomePage extends StatefulWidget {
-  final StudentProfile studentProfile;
-  final EngineerProfile engineerProfile;
+  final ConsumerProfile consumerProfile;
   HomePage({
-    required this.studentProfile,
-    required this.engineerProfile
+    required this.consumerProfile
   });
 
   @override
   State<HomePage> createState() => _HomePageState(
-    studentProfile: studentProfile,
-    engineerProfile: engineerProfile,
+    consumerProfile: consumerProfile,
   );
 }
 class _HomePageState extends State<HomePage>{
-  StudentProfile studentProfile;
-  EngineerProfile engineerProfile;
+  ConsumerProfile consumerProfile;
   _HomePageState({
-    required this.studentProfile,
-    required this.engineerProfile
+    required this.consumerProfile
   });
 
   Widget build(BuildContext context) {
@@ -101,17 +89,17 @@ class _HomePageState extends State<HomePage>{
                   child: const Text('로그인'),
                 ),
               ),
-              if (engineerProfile.name.isNotEmpty)
+              if (consumerProfile.name.isNotEmpty)
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Engineer Profile:'),
-                        Text('Name: ${engineerProfile.name}'),
-                        Text('Email: ${engineerProfile.email}'),
-                        Text('Skill: ${engineerProfile.skill}'),
+                        Text('${consumerProfile.name} Profile:'),
+                        Text('Name: ${consumerProfile.name}'),
+                        Text('Email: ${consumerProfile.email}'),
+                        Text('Address: ${consumerProfile.address}'),
                       ],
                     ),
                   ),
@@ -403,6 +391,7 @@ class _HomePageState extends State<HomePage>{
   }
 }
 
+
 class CardPage extends StatelessWidget {
   const CardPage({super.key});
 
@@ -602,140 +591,43 @@ class PaymentPage extends StatelessWidget {
     );
   }
 }
-class StudentProfileForm extends StatefulWidget {
-  final UserProfile userProfile;
-  final Function(StudentProfile) updateProfile;
 
-  StudentProfileForm({
-    Key? key,
-    required this.userProfile,
-    required this.updateProfile,
-  }) : super(key: key);
-
-  @override
-  _StudentProfileFormState createState() => _StudentProfileFormState();
-}
-class _StudentProfileFormState extends State<StudentProfileForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _studentProfile = StudentProfile(name: '', email: '', grade: 0);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Student Profile'),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Name'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your name';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                setState(() {
-                  _studentProfile.name = value!;
-                });
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Email'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your email';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                setState(() {
-                  _studentProfile.email = value!;
-                });
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Grade'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your grade';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                setState(() {
-                  _studentProfile.grade = int.parse(value!);
-                });
-              },
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Processing Data')),
-                  );
-                  widget.updateProfile(_studentProfile);
-                  Navigator.pop(context);
-                }
-              },
-              child: Text('친구 신청'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 class UserProfile {
   String name;
+  String address;
   String email;
 
-  UserProfile({required this.name, required this.email});
+  UserProfile({required this.name, required this.address, required this.email});
 }
-class StudentProfile extends UserProfile {
-  int grade;
-
-  StudentProfile({
+class ConsumerProfile extends UserProfile {
+  ConsumerProfile({
     required String name,
+    required String address,
     required String email,
-    required this.grade,
-  }) : super(name: name, email: email);
+  }) : super(name: name, address: address, email: email);
 }
-
-class EngineerProfile extends UserProfile {
-  String skill;
-  EngineerProfile({
-    required String name,
-    required String email,
-    required this.skill,
-  }) : super(name: name, email: email);
-}
-class EngineerProfileForm extends StatefulWidget {
+class ConsumerProfileForm extends StatefulWidget {
   final UserProfile userProfile;
-  final Function(EngineerProfile) updateProfile;
+  final Function(ConsumerProfile) updateProfile;
 
-  EngineerProfileForm({
+  ConsumerProfileForm({
     Key? key,
     required this.userProfile,
     required this.updateProfile,
   }) : super(key: key);
 
   @override
-  _EngineerProfileFormState createState() => _EngineerProfileFormState();
+  _ConsumerProfileFormState createState() => _ConsumerProfileFormState();
 }
-class _EngineerProfileFormState extends State<EngineerProfileForm> {
+class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
   final _formKey = GlobalKey<FormState>();
-  final _engineerProfile = EngineerProfile(name: '', email: '', skill: '');
+  final _consumerProfile = ConsumerProfile(name: '', email: '', address: '');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Engineer Profile'),
+        title: Text('Consumer Profile'),
       ),
       body: Form(
         key: _formKey,
@@ -751,7 +643,7 @@ class _EngineerProfileFormState extends State<EngineerProfileForm> {
               },
               onSaved: (value) {
                 setState(() {
-                  _engineerProfile.name = value!;
+                  _consumerProfile.name = value!;
                 });
               },
             ),
@@ -765,21 +657,21 @@ class _EngineerProfileFormState extends State<EngineerProfileForm> {
               },
               onSaved: (value) {
                 setState(() {
-                  _engineerProfile.email = value!;
+                  _consumerProfile.email = value!;
                 });
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Skill'),
+              decoration: InputDecoration(labelText: 'Address'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your field';
+                  return 'Please enter your address';
                 }
                 return null;
               },
               onSaved: (value) {
                 setState(() {
-                  _engineerProfile.skill = value!;
+                  _consumerProfile.address = value!;
                 });
               },
             ),
@@ -790,7 +682,7 @@ class _EngineerProfileFormState extends State<EngineerProfileForm> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Processing Data')),
                   );
-                  widget.updateProfile(_engineerProfile);
+                  widget.updateProfile(_consumerProfile);
                   Navigator.pop(context);
                 }
               },
@@ -802,3 +694,4 @@ class _EngineerProfileFormState extends State<EngineerProfileForm> {
     );
   }
 }
+
