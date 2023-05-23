@@ -10,8 +10,10 @@ class MainPage extends StatefulWidget{
   State<MainPage> createState() => _MainPageState();
 }
 class _MainPageState extends State <MainPage> {
+  LoggedInData? _loggedData; //사용자 로그인 데이터 저장을 위한 변수
   final userProfile = UserProfile(name: '', address: '', email: '');
   final consumerProfile = ConsumerProfile(name: '', email: '', address: '');
+
 
   void updateConsumerProfile(ConsumerProfile profile) {
     setState(() {
@@ -19,6 +21,23 @@ class _MainPageState extends State <MainPage> {
       consumerProfile.email = profile.email;
       consumerProfile.address = profile.address;
     });
+  }
+  void initState(){
+    super.initState();
+    _loadData(); // 로그인 데이터 로드
+  }
+  Future<void> _loadData() async {
+    LoggedInData? loadedData = await LoggedInData.readInstance(); // 저장된 데이터 불러오기
+    print(loadedData?.toJson()); // 로그 출력
+    if (loadedData != null) {
+      setState(() {
+        _loggedData = loadedData; // 로드된 데이터로 상태 업데이트
+      });
+    } else {
+      setState(() {
+        _loggedData = LoggedInData(id : 'test', pw : '123'); // 초기 데이터 생성
+      });
+    }
   }
 
   @override
@@ -32,12 +51,52 @@ class _MainPageState extends State <MainPage> {
           consumerProfile: consumerProfile,
         ),
         '/cart': (context) => const CardPage(),
+        '/myData' : (context) => MyDataWidget(),
         '/pay': (context)  => const PaymentPage(),
         '/engineerProfileForm': (context) => ConsumerProfileForm(
     userProfile: userProfile,
     updateProfile: updateConsumerProfile),
       },
     );
+  }
+}
+
+class LoggedInData {
+  String? id;
+  String? pw;
+
+  LoggedInData({required this.id, required this.pw});
+
+  String toJson() => json.encode({
+    'id': id,
+    'pw': pw,
+  }); // JSON 형태로 인코딩
+
+  factory LoggedInData.fromJson(String str) {
+    final jsonData = json.decode(str); // JSON 디코딩
+    return LoggedInData(
+        id: jsonData['id'],
+        pw: jsonData['pw'],);
+  }
+
+  static Future<LoggedInData?> readInstance() async {
+    final prefs =
+    await SharedPreferences.getInstance(); // SharedPreferences 인스턴스 생성
+    final jsonString =
+    prefs.getString('myData'); // SharedPreferences에서 key가 'myData'인 값을 불러옴
+
+    if (jsonString == null) {
+      // 저장된 값이 없으면 null 반환
+      return null;
+    }
+    return LoggedInData.fromJson(jsonString);
+  }
+
+  Future<void> saveInstance() async {
+    final prefs =
+    await SharedPreferences.getInstance(); // SharedPreferences 인스턴스 생성
+    prefs.setString(
+        'myData', toJson()); // key가 'myData'인 값에 MyData 인스턴스를 JSON으로 인코딩하여 저장
   }
 }
 
@@ -54,23 +113,13 @@ class HomePage extends StatefulWidget {
   );
 }
 class _HomePageState extends State<HomePage>{
+
   ConsumerProfile consumerProfile;
   _HomePageState({
     required this.consumerProfile
   });
 
   Widget build(BuildContext context) {
-
-    // StudentProfile? studentProfile;
-    // EngineerProfile? engineerProfile;
-
-    // @override
-    // void initState(){
-    //   super.initState();
-    //   final StudentProfile studentProfile;
-    //   final EngineerProfile engineerProfile;
-    // }
-
     return Scaffold(
         appBar: AppBar(
             title: const Text("연세 쇼핑"),
@@ -143,7 +192,7 @@ class _HomePageState extends State<HomePage>{
                             onPressed: () {
                               // Validate will return true if the form is valid, or false if
                               // the form is invalid.
-                              Navigator.pushNamed(context, '/cart');
+                              Navigator.pushNamed(context, '/myData');
                             },
                             child: const Text('검색하기'),
                           ),
@@ -620,9 +669,27 @@ class ConsumerProfileForm extends StatefulWidget {
   _ConsumerProfileFormState createState() => _ConsumerProfileFormState();
 }
 class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
+  LoggedInData? _loggedData; //사용자 로그인 데이터 저장을 위한 변수
   final _formKey = GlobalKey<FormState>();
   final _consumerProfile = ConsumerProfile(name: '', email: '', address: '');
 
+  void initState(){
+    super.initState();
+    _loadData(); // 로그인 데이터 로드
+  }
+  Future<void> _loadData() async {
+    LoggedInData? loadedData = await LoggedInData.readInstance(); // 저장된 데이터 불러오기
+    print(loadedData?.toJson()); // 로그 출력
+    if (loadedData != null) {
+      setState(() {
+        _loggedData = loadedData; // 로드된 데이터로 상태 업데이트
+      });
+    } else {
+      setState(() {
+        _loggedData = LoggedInData(id : 'test', pw : '123'); // 초기 데이터 생성
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -644,6 +711,7 @@ class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
               onSaved: (value) {
                 setState(() {
                   _consumerProfile.name = value!;
+                  _loggedData?.id = value;
                 });
               },
             ),
@@ -658,6 +726,7 @@ class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
               onSaved: (value) {
                 setState(() {
                   _consumerProfile.email = value!;
+                  _loggedData?.pw = value;
                 });
               },
             ),
@@ -695,3 +764,139 @@ class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
   }
 }
 
+
+class MyDataWidget extends StatefulWidget {
+  @override
+  _MyDataWidgetState createState() =>
+      _MyDataWidgetState(); // 상태를 가지는 위젯의 상태 클래스 반환
+}
+class _MyDataWidgetState extends State<MyDataWidget> {
+  CostData? _data; // 사용자 데이터 저장을 위한 변수
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData(); // 사용자 데이터 로드
+  }
+
+  Future<void> _loadData() async {
+    CostData? loadedData = await CostData.readInstance(); // 저장된 데이터 불러오기
+    print(loadedData?.toJson()); // 로그 출력
+    if (loadedData != null) {
+      setState(() {
+        _data = loadedData; // 로드된 데이터로 상태 업데이트
+      });
+    } else {
+      setState(() {
+        _data = CostData(product: '연세 필통', counts: 1, cost: 1000); // 초기 데이터 생성
+
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('연세대 마켓'), // 상단바 제목 설정
+      ),
+      body: _data == null
+          ? CircularProgressIndicator() // 데이터 로딩 중일 때 로딩 아이콘 출력
+          : Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('상품명 :  ${_data!.product}'),
+            Text('상품 수량 : ${_data!.counts}'),
+            Text('상품 수량 : ${_data!.counts * _data!.cost}원'),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          setState(() {
+            _data!.counts = _data!.counts + 1; //
+          });
+          await _data?.saveInstance(); // 데이터 저장
+        },
+        tooltip: 'saveInstance',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+class ProductData {
+  String product;
+  int counts;
+
+  ProductData({required this.product, required this.counts});
+
+  String toJson() => json.encode({'product': product, 'counts': counts}); // JSON 형태로 인코딩
+
+  factory ProductData.fromJson(String str) {
+    final jsonData = json.decode(str); // JSON 디코딩
+    return ProductData(
+        product: jsonData['product'], counts: jsonData['counts']); // ProductData 인스턴스 생성
+  }
+
+  static Future<ProductData?> readInstance() async {
+    final prefs =
+    await SharedPreferences.getInstance(); // SharedPreferences 인스턴스 생성
+    final jsonString =
+    prefs.getString('myData'); // SharedPreferences에서 key가 'myData'인 값을 불러옴
+
+    if (jsonString == null) {
+      // 저장된 값이 없으면 null 반환
+      return null;
+    }
+    return ProductData.fromJson(jsonString); //
+  }
+
+  Future<void> saveInstance() async {
+    final prefs =
+    await SharedPreferences.getInstance(); // SharedPreferences 인스턴스 생성
+    prefs.setString(
+        'myData', toJson()); // key가 'myData'인 값에 MyData 인스턴스를 JSON으로 인코딩하여 저장
+  }
+}
+class CostData extends ProductData {
+  int cost;
+
+  CostData({required String product, required int counts, required this.cost})
+      : super(product: product, counts: counts);
+
+  String toJson() => json.encode({
+    'product': product,
+    'counts': counts,
+    'cost': cost,
+  }); // JSON 형태로 인코딩
+
+  factory CostData.fromJson(String str) {
+    final jsonData = json.decode(str); // JSON 디코딩
+    return CostData(
+        product: jsonData['product'],
+        counts: jsonData['counts'],
+        cost: jsonData['cost']); // CostData 인스턴스 생성
+  }
+
+  static Future<CostData?> readInstance() async {
+    final prefs =
+    await SharedPreferences.getInstance(); // SharedPreferences 인스턴스 생성
+    final jsonString =
+    prefs.getString('myData'); // SharedPreferences에서 key가 'myData'인 값을 불러옴
+
+    if (jsonString == null) {
+      // 저장된 값이 없으면 null 반환
+      return null;
+    }
+
+    return CostData.fromJson(jsonString);
+  }
+
+  Future<void> saveInstance() async {
+    final prefs =
+    await SharedPreferences.getInstance(); // SharedPreferences 인스턴스 생성
+    prefs.setString(
+        'myData', toJson()); // key가 'myData'인 값에 MyData 인스턴스를 JSON으로 인코딩하여 저장
+  }
+}
