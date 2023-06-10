@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:my_flutter1/animation.dart';
 // Router
 void main() async {
   runApp(MainPage());
@@ -113,11 +114,30 @@ class HomePage extends StatefulWidget {
   );
 }
 class _HomePageState extends State<HomePage>{
+  LoggedInData? _loggedData; //사용자 로그인 데이터 저장을 위한 변수
 
   ConsumerProfile consumerProfile;
   _HomePageState({
     required this.consumerProfile
   });
+
+  void initState(){
+    super.initState();
+    _loadData(); // 로그인 데이터 로드
+  }
+  Future<void> _loadData() async {
+    LoggedInData? loadedData = await LoggedInData.readInstance(); // 저장된 데이터 불러오기
+    print(loadedData?.toJson()); // 로그 출력
+    if (loadedData != null) {
+      setState(() {
+        _loggedData = loadedData; // 로드된 데이터로 상태 업데이트
+      });
+    } else {
+      setState(() {
+        _loggedData = LoggedInData(id : 'test', pw : '123'); // 초기 데이터 생성
+      });
+    }
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,6 +148,7 @@ class _HomePageState extends State<HomePage>{
           child: Column(
             children: [
               SizedBox(height: 20,),
+              HomeHeader(),
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 40,
@@ -138,14 +159,14 @@ class _HomePageState extends State<HomePage>{
                   child: const Text('로그인'),
                 ),
               ),
-              if (consumerProfile.name.isNotEmpty)
+              // if (consumerProfile.name.isNotEmpty)
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${consumerProfile.name} Profile:'),
+                        Text('Profile:'),
                         Text('Name: ${consumerProfile.name}'),
                         Text('Email: ${consumerProfile.email}'),
                         Text('Address: ${consumerProfile.address}'),
@@ -669,28 +690,28 @@ class ConsumerProfileForm extends StatefulWidget {
   _ConsumerProfileFormState createState() => _ConsumerProfileFormState();
 }
 class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
-  LoggedInData? _loggedData; //사용자 로그인 데이터 저장을 위한 변수
+  // LoggedInData? _loggedData; //사용자 로그인 데이터 저장을 위한 변수
 
   final _formKey = GlobalKey<FormState>();
   final _consumerProfile = ConsumerProfile(name: '', email: '', address: '');
 
-  void initState(){
-    super.initState();
-    _loadData(); // 로그인 데이터 로드
-  }
-  Future<void> _loadData() async {
-    LoggedInData? loadedData = await LoggedInData.readInstance(); // 저장된 데이터 불러오기
-    print(loadedData?.toJson()); // 로그 출력
-    if (loadedData != null) {
-      setState(() {
-        _loggedData = loadedData; // 로드된 데이터로 상태 업데이트
-      });
-    } else {
-      setState(() {
-        _loggedData = LoggedInData(id : 'test', pw : '123'); // 초기 데이터 생성
-      });
-    }
-  }
+  // void initState(){
+  //   super.initState();
+  //   _loadData(); // 로그인 데이터 로드
+  // }
+  // Future<void> _loadData() async {
+  //   LoggedInData? loadedData = await LoggedInData.readInstance(); // 저장된 데이터 불러오기
+  //   print(loadedData?.toJson()); // 로그 출력
+  //   if (loadedData != null) {
+  //     setState(() {
+  //       _loggedData = loadedData; // 로드된 데이터로 상태 업데이트
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _loggedData = LoggedInData(id : 'test', pw : '123'); // 초기 데이터 생성
+  //     });
+  //   }
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -709,12 +730,13 @@ class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
                 }
                 return null;
               },
-              onSaved: (value) async {
+              onSaved: (value) {
                 setState(() {
                   _consumerProfile.name = value!;
-                  _loggedData?.id = value;
+                  // _loggedData?.id = value;
                 });
-                await _loggedData?.saveInstance();
+                widget.updateProfile(_consumerProfile);
+                // await _loggedData?.saveInstance();
               },
             ),
             TextFormField(
@@ -728,9 +750,9 @@ class _ConsumerProfileFormState extends State<ConsumerProfileForm> {
               onSaved: (value) async {
                 setState(() {
                   _consumerProfile.email = value!;
-                  _loggedData?.pw = value;
+                  // _loggedData?.pw = value;
                 });
-                await _loggedData?.saveInstance();
+                // await _loggedData?.saveInstance();
               },
             ),
             TextFormField(
